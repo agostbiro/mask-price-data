@@ -1,0 +1,6 @@
+AutoApprovalDelayInSeconds: 86400  # 24 hours
+AssignmentDurationInSeconds: 900  # 15 minutes
+Reward: "0.01"
+Title: "Enter pricing data"
+Description: "Enter pricing data and product availability from a website"
+Keywords: "data collection, website, data extraction"
