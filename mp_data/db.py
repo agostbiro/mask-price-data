@@ -32,7 +32,7 @@ _Base = declarative_base(cls=RepresentableBase)
 _NonNullCol: Type[Column] = partial(Column, nullable=False)
 
 
-# Enforce foreign key constraint in SQlite
+# Enforce foreign key constraint in SQLite
 # From https://stackoverflow.com/a/15542046/2650622
 @event.listens_for(Engine, "connect")
 def _set_sqlite_pragma(dbapi_connection, _):
