@@ -11,12 +11,12 @@ Pricing data for each product is gathered by multiple different workers (current
 
 ### Raw MTurk Data
 
-The raw MTurk data can be found in a SQLite database committed into the repo: [data/db/mask_price_data.sqlite]().
-SQLAlchemy ORM classes for working with the data along with comments explaining the fields are in [mp_data/db.py]().
+The raw MTurk data can be found in a SQLite database committed into the repo: [data/db/mask_price_data.sqlite](data/db/mask_price_data.sqlite).
+SQLAlchemy ORM classes for working with the data along with comments explaining the fields are in [mp_data/db.py](mp_data/db.py).
 
 ### CSV exports
 
-Consolidated CSV exports of the raw MTUrk data are available under [data/export]().
+Consolidated CSV exports of the raw MTUrk data are available under [data/export](data/export).
 For each marketplace, the latest unit prices for each tracked product, and the historical median unit price time series are exported.
 The contents of the CSV files are display in charts on [maskprice.info](https://maskprice.info).
 
