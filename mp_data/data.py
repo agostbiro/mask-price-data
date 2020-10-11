@@ -146,7 +146,8 @@ def _consolidate_assignments(
         majority = next(k for k in count if count[k] == max_count)
         # Price is stored in db as int representing cents
         price, quantity, currency, in_stock = majority
-        if quantity < 5 or price == 0:
+        # Heuristic to filter out nonsense output from MTurk
+        if not _check_legit_quantity(quantity) or price == 0:
             return None
         hit = assignments[0].hit
         return _Observation(
@@ -160,6 +161,10 @@ def _consolidate_assignments(
         )
     else:
         return None
+
+
+def _check_legit_quantity(quantity: int):
+    return 5 <= quantity <= 500 and quantity % 5 == 0
 
 
 def _export_timeseries(observations: Sequence[_Observation], out_dir: Path):
