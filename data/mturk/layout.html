@@ -1,0 +1,85 @@
+<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>
+
+<div>
+    <p>Please provide the price for the product, the quantity of items in the package and whether the item is in stock.</p>
+    <p>If there are multiple quantites, please pick the price and the quantity for the largest available quantity.</p>
+    <p>If the item is not in stock, you can omit the price and quantity if they are not displayed.</p>
+</div>
+
+<div>
+    <p><strong>Link to the product:</strong></p>
+
+    <!-- Your website URLs will be substituted for the "url" variable when you publish 
+           a batch with an input file containing multiple website URLs -->
+    <a href="${url}" target="_blank">${url}</a>
+
+</div>
+
+
+<crowd-form answer-format="flatten-objects">
+   <crowd-radio-group>
+      <crowd-radio-button id="in-stock" name="in-stock" value="in-stock">In Stock</crowd-radio-button>
+      <crowd-radio-button id="not-in-stock" name="not-in-stock" value="not-in-stock">Not In Stock</crowd-radio-button>
+   </crowd-radio-group>
+   
+   
+   <crowd-input id="price" name="price" label="Price" placeholder="e.g. $1,456.78 or €1.025,7"></crowd-input>
+   <crowd-input id="quantity" name="quantity" label="Quantity" placeholder="e.g. 50" />
+
+  <short-instructions>
+    Please provide the price for the product, the quantity of items in the package and whether the item is in stock.
+    If there are multiple quantites, please pick the price and the quantity for the largest available one.
+  </short-instructions>
+
+  <full-instructions>
+    Please provide the price for the product, the quantity of items in the package and whether the item is in stock.
+    If there are multiple quantites, please pick the price and the quantity for the largest available one.
+  </full-instructions>
+</crowd-form>
+
+<script type="text/javascript">
+(function() {
+var pricePattern = /^[\d,\.\$€£]+?$/g
+var currencyPattern = /[$€£]/g
+var quantityPattern = /^\d+$/g
+document.querySelector('crowd-form').onsubmit = function(e) {
+    var availableChecked = document.getElementById("in-stock").checked
+    var notAvailableChecked = document.getElementById("not-in-stock").checked
+    if (!availableChecked && !notAvailableChecked) {
+        e.preventDefault()
+        alert("Please select wheter the product is in stock!")
+        return
+    }
+
+    var price = document.getElementById("price").value
+    if (availableChecked && !pricePattern.test(price)) {
+        e.preventDefault()
+        alert("Please provide a numerical amount for price (e.g. '$123,456.78')!")
+        return
+    }
+    if (availableChecked && !currencyPattern.test(price)) {
+        e.preventDefault()
+        alert("Please include the currency in the price (e.g. '$123,456.78')!")
+        return
+    }
+    var quantity = document.getElementById("quantity").value
+    if (availableChecked && !quantityPattern.test(quantity)) {
+        e.preventDefault()
+        alert("Please provide a numerical quantity (e.g. '50')!")
+        return
+    }
+    if (availableChecked && parseFloat(quantity) === 0) {
+        e.preventDefault()
+        alert("Quantity can not be 0!")
+        return
+    }
+    if (availableChecked && parseFloat(price.replace(/[^0-9]/g,'')) === 0) {
+        e.preventDefault()
+        alert("Price can not be 0!")
+        return
+
+    }
+    
+}
+})()
+</script>
