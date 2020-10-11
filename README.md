@@ -9,6 +9,8 @@ Product URLs are scraped automatically.
 Price, quantity and availability data is gathered by MTurk workers.
 Pricing data for each product is gathered by multiple different workers (currently 5).
 
+The dataset is updated at least once a week.
+
 ### Raw MTurk Data
 
 The raw MTurk data can be found in a SQLite database committed into the repo: [data/db/mask_price_data.sqlite](data/db/mask_price_data.sqlite).
