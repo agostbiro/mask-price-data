@@ -217,9 +217,9 @@ def _create_assignment(assignment_dict):
         answer_text = "".join(ans.freetext.contents)
         results[question_name] = answer_text
 
-    quantity = _parse_quantity(results["quantity"])
+    quantity = _parse_quantity(results.get("quantity"))
     in_stock = results["in-stock.in-stock"] == "true"
-    raw_price = results["price"]
+    raw_price = results.get("price")
     price, currency = _parse_price_currency(raw_price, in_stock, assignment_id)
 
     assignment = Assignment(
@@ -236,14 +236,16 @@ def _create_assignment(assignment_dict):
     return assignment
 
 
-def _parse_quantity(raw_quantity: str):
+def _parse_quantity(raw_quantity: Optional[str]) -> Optional[int]:
     try:
         return int(raw_quantity)
-    except ValueError:
+    except (TypeError, ValueError):
         return None
 
 
-def _parse_price_currency(raw_price: str, in_stock: bool, assignment_id: str):
+def _parse_price_currency(raw_price: Optional[str], in_stock: bool, assignment_id: str):
+    if raw_price is None:
+        return None, None
     curr_match = regex.search(r"^\p{Sc}|\p{Sc}$", raw_price)
     if in_stock and not curr_match:
         raise ValueError(f"Invalid price for assignment {assignment_id}: '{raw_price}'")

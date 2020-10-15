@@ -46,9 +46,9 @@ def _get_currency_converter() -> CurrencyConverter:
 @dataclass()
 class _Observation:
     datetime: datetime
-    price_cents: int
-    currency_symbol: str
-    quantity: int
+    price_cents: Optional[int]
+    currency_symbol: Optional[str]
+    quantity: Optional[int]
     in_stock: bool
     domain_name: str
     url: str
@@ -58,8 +58,11 @@ class _Observation:
         self.uuid = uuid.uuid4().hex
 
     @property
-    def price(self):
-        return self.price_cents / 100
+    def price(self) -> Optional[float]:
+        if self.price_cents is None:
+            return None
+        else:
+            return self.price_cents / 100
 
     @property
     def date(self) -> date:
@@ -70,24 +73,31 @@ class _Observation:
         return self.date.strftime("%Y-%m-%d")
 
     @property
-    def iso_currency(self) -> str:
-        if self.currency_symbol == "$":
+    def iso_currency(self) -> Optional[str]:
+        if self.currency_symbol is None:
+            return None
+        elif self.currency_symbol == "$":
             # Dollar sign is ambiguous, assume it's USD
             return "USD"
         else:
             return iso4217parse.parse(self.currency_symbol)[0].alpha3
 
     @property
-    def price_usd(self) -> float:
-        if self.iso_currency == "USD":
+    def price_usd(self) -> Optional[float]:
+        if self.price is None:
+            return None
+        elif self.iso_currency == "USD":
             return self.price
         else:
             cc = _get_currency_converter()
             return cc.convert(self.price, self.iso_currency, "USD", date=self.date)
 
     @property
-    def unit_price_usd(self) -> float:
-        return self.price_usd / self.quantity
+    def unit_price_usd(self) -> Optional[float]:
+        if self.price_usd is None:
+            return None
+        else:
+            return self.price_usd / self.quantity
 
     @property
     def marketplace(self) -> str:
@@ -147,7 +157,7 @@ def _consolidate_assignments(
         # Price is stored in db as int representing cents
         price, quantity, currency, in_stock = majority
         # Heuristic to filter out nonsense output from MTurk
-        if not _check_legit_quantity(quantity) or price == 0:
+        if not in_stock or not _check_legit_quantity(quantity) or price == 0:
             return None
         hit = assignments[0].hit
         return _Observation(
