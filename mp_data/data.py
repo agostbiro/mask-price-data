@@ -115,7 +115,7 @@ def data():
 
 
 @data.command()
-@click.argument("out_dir", type=Path)
+@click.option("-o", "--out_dir", type=Path, required=False, default=Path('./data/export'))
 def export(out_dir: Path):
     assignments_dict = _fetch_assignments()
     all_observations = []
@@ -131,7 +131,7 @@ def export(out_dir: Path):
     _export_timeseries(filtered_observations, out_dir)
     _export_latest_observations(filtered_observations, out_dir)
 
-    click.echo(f"Exported data to {out_dir}")
+    click.echo(f"Exported data to '{out_dir}'")
 
 
 def _fetch_assignments() -> Dict[str, List[Assignment]]:
